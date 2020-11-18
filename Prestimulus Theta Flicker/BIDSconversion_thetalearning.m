@@ -139,7 +139,12 @@ for ii = 1:length(sub)
   theta                           = cfg_trials.trl(:, 5);
   display                         = cfg_trials.trl(:, 6);
   
-  cfg.events = table(begsample, endsample, offset, experiment_phase, theta, display);
+  % remove the following again later
+  onset                       = begsample./hdr.Fs;
+  duration                    = (endsample-begsample+1)./hdr.Fs; 
+
+  
+  cfg.events = table(onset, duration, begsample, endsample, offset, experiment_phase, theta, display);
   
   %% Section 9: the channels.tsv
   
@@ -268,11 +273,15 @@ end
 
 % Then make sure these are excluded from the BIDS validator test
 
-% we want to exlude all .txt files from the validator
-towrite = ['**/*.txt'];
+% we want to exlude all .txt files from the validator, and all scans tsv
+% files
+
+towrite_txt = ['**/*.txt'];
+towrite_scans = ['**/*_scans.tsv'];
 destination = [bidsroot filesep '.bidsignore'];
 fileID = fopen(destination,'w');
-fprintf(fileID,'%s', towrite);
+fprintf(fileID,'%s', towrite_txt);
+fprintf(fileID, '\n%s', towrite_scans);
 fclose(fileID);
 
 %% There are scans.tsv files that should not be there, let's remove them here for now
