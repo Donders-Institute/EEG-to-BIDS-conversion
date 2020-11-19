@@ -217,10 +217,10 @@ events_json.endsample.description               = 'sample from start of recordin
 events_json.endsample.units                     = 'sample number';
 events_json.offset.description                  = 'offset from onset till start of the trial';
 events_json.offset.units                        = 'sample number';
-events_json.experiment_phase.description        = 'Phase of the experiment';
-events_json.experiment_phase.levels             = {'1: theta flicker and display relevant cartoon', '2: display distraction cartoon', '3: display distraction math problems'};
-events_json.theta.description                   = 'presentation of relevant theta flicker or random frequency flicker';
-events_json.theta.levels                        = {'100: 5 Hz theta flicker', '200: random frequency flicker', 'n/a: no flicker is shown in this phase of the experiment'};
+events_json.experiment_block.description        = 'Block of the experiment';
+events_json.experiment_block.levels             = {'1: theta flicker and display relevant cartoon', '2: display distraction cartoon', '3: display distraction math problems'};
+events_json.flicker.description                 = 'presentation pre-stimulus flicker at theta or random frequencies';
+events_json.flicker.levels                      = {'theta: pre-stimulis flicker at 5 Hz', 'random: pre-stimulus flicker at a random frequency', 'n/a: no pre-stimulus flicker is shown in this block of the experiment'};
 events_json.display.description                 = 'type of cartoon or math problem that is shown to the participant';
 events_json.display.levels                      = {'1-20: one of the relevant cartoons', '221-226: one of the distraction cartoons', '60: a math problem'};
 
