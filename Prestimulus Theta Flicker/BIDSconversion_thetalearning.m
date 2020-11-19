@@ -123,23 +123,9 @@ for ii = 1:length(sub)
   
   % To do this, first create events using ft_define_trial
   cfg_trials                      = cfg;
-  cfg_trials.trialfun             = 'trialfun_thetalearning'; % works only for rocio's data set
   cfg_trials.trialdef.eventtype   = 'Stimulus';
-  % cfg_trials.trialdef.eventvalue     = {'S', 'S100', 'S200', 'S221', 'S222', 'S223', 'S224', 'S225', 'S226'};
-  cfg_trials                      = ft_definetrial(cfg_trials);
-  
-  % Now we create the events.tsv
-  
-  % Create a table of the trl matrix, so that names are there
-  
-  begsample                       = cfg_trials.trl(:, 1);
-  endsample                       = cfg_trials.trl(:, 2);
-  offset                          = cfg_trials.trl(:, 3);
-  experiment_phase                = cfg_trials.trl(:, 4);
-  theta                           = cfg_trials.trl(:, 5);
-  display                         = cfg_trials.trl(:, 6);
-  
-  cfg.events = table(begsample, endsample, offset, experiment_phase, theta, display);
+  trl                             = trialfun_thetalearning(cfg_trials);   
+  cfg.events                      = trl;
   
   %% Section 9: the channels.tsv
   
