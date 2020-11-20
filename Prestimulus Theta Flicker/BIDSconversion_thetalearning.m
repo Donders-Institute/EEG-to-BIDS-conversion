@@ -2,15 +2,18 @@
 
 %% Section 1: specification of folders
 
-clear;
+clear
 
-addpath('C:\Users\Didi\Documents\GitHub\Donders Datasets\dataset_rocio\3_Data');
+% basedir = '/Volumes/Samsung T3/data';
+basedir = 'C:\Users\Didi\Documents\GitHub\Donders Datasets';
 
-sourcedata = 'C:\Users\Didi\Documents\GitHub\Donders Datasets\dataset_rocio\3_Data\Raw data';
+addpath(fullfile(basedir, 'dataset_rocio', '3_Data'));
+
+sourcedata = fullfile(basedir, 'dataset_rocio', '3_Data', 'Raw data');
 
 cd(sourcedata)
 
-bidsroot = 'C:\Users\Didi\Documents\GitHub\Donders Datasets\dataset_rocio\Thetalearning_dataset_BIDS';
+bidsroot = fullfile(basedir, 'dataset_rocio', 'Thetalearning_dataset_BIDS');
 
 % Delete the current BIDS folder if it already exists
 if exist(bidsroot, 'dir')
@@ -124,7 +127,9 @@ for ii = 1:length(sub)
   % To do this, first create events using ft_define_trial
   cfg_trials                      = cfg;
   cfg_trials.trialdef.eventtype   = 'Stimulus';
-  trl                             = trialfun_thetalearning(cfg_trials);   
+  trl                             = trialfun_thetalearning(cfg_trials);
+  trl.onset = (trl.begsample-1)/hdr.Fs;
+  trl.duration = zeros(size(trl.onset));
   cfg.events                      = trl;
   
   %% Section 9: the channels.tsv
@@ -170,7 +175,7 @@ for ii = 1:length(sub)
   
   %% Stimulus info --> Not necessary for now
   
-  % cfg.presentationfile        = [sourcedata '\subject_' sub{1} '\Behavioural' '\Theta_Exp_Adult_part1']; % Not sure about this
+  % cfg.presentationfile        = fullfile(sourcedata, ['subject_' sub{1}], 'Behavioural', 'Theta_Exp_Adult_part1'); % Not sure about this
   % cfg.trigger.eventtype       = cfg.trialdef.eventtype; % Not sure about this % this should be a string, extract it from a datainfo file
   % cfg.trigger.eventvalue      = string or number
   % cfg.trigger.skip            = 'last'/'first'/'none'
@@ -200,7 +205,7 @@ participants_json.age.units                     = 'years';
 participants_json.sex.description               = 'gender of each subject';
 participants_json.sex.levels                    = {'f: female', 'm: male' };
 
-filename                                        = [bidsroot filesep 'participants.json'];
+filename                                        = fullfile(bidsroot, 'participants.json');
 
 write_json(filename, participants_json);
 
@@ -224,45 +229,42 @@ events_json.flicker.levels                      = {'theta: pre-stimulis flicker 
 events_json.display.description                 = 'type of cartoon or math problem that is shown to the participant';
 events_json.display.levels                      = {'1-20: one of the relevant cartoons', '221-226: one of the distraction cartoons', '60: a math problem'};
 
-filename                                        = [bidsroot filesep 'task-' cfg.TaskName '_events.json'];
+filename                                        = fullfile(bidsroot, ['task-' cfg.TaskName '_events.json']);
 
 write_json(filename, events_json);
 
 %% Add the matlab code used to generate BIDS to a subfolder
 
-destination                                     = [bidsroot filesep 'code'];
-this_script                                     = [mfilename('fullpath') '.m'];
-
+destination = fullfile(bidsroot, 'code');
 mkdir(destination);
-copyfile(this_script, destination);
+copyfile(which('trialfun_thetalearning'), destination);
+copyfile(which(mfilename), destination);
 
 %% Copy the labnote text files
 
 % loop over the subjects
 for ii = 1:length(sub)
   
-  source = [sourcedata '\subject_' sub{ii} '\*.txt'];
+  source = fullfile(sourcedata, ['subject_' sub{ii}], '*.txt');
   % The labnotes are not there for every participant, first test if it exists
   if isempty(dir(source))
     % do nothing
   else
-    source_file = [sourcedata '\subject_' sub{ii} filesep dir(source).name];
-    destination = [bidsroot '\sub-' sub{ii}];
+    source_file = fullfile(sourcedata, ['subject_' sub{ii}], dir(source).name);
+    destination = fullfile(bidsroot, ['sub-' sub{ii}]);
     copyfile(source_file, destination);
   end
 end
 
-% Then make sure these are excluded from the BIDS validator test
+%% Then make sure these are excluded from the BIDS validator test
 
 % we want to exlude all .txt files from the validator, and all scans tsv
 % files
 
-towrite_txt = ['**/*.txt'];
-towrite_scans = ['**/*_scans.tsv'];
-destination = [bidsroot filesep '.bidsignore'];
+destination = fullfile(bidsroot, '.bidsignore');
 fileID = fopen(destination,'w');
-fprintf(fileID,'%s', towrite_txt);
-fprintf(fileID, '\n%s', towrite_scans);
+fprintf(fileID,'*.txt\n');
+fprintf(fileID,'*_scans.tsv\n');
 fclose(fileID);
 
 %% There are scans.tsv files that should not be there, let's remove them here for now
