@@ -4,13 +4,13 @@
 
 clear;
 
-addpath();
+addpath('C:\Users\Didi\Documents\GitHub\Donders Datasets\dataset_motionese');
 
-sourcedata = '';
+sourcedata = 'C:\Users\Didi\Documents\GitHub\Donders Datasets\dataset_motionese';
 
 cd(sourcedata)
 
-bidsroot = '';
+bidsroot = 'C:\Users\Didi\Documents\GitHub\Donders Datasets\dataset_motionese\BIDS';
 
 % Delete the current BIDS folder if it already exists
 if exist(bidsroot, 'dir')
@@ -22,13 +22,13 @@ end
 sub = {'P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'P9', 'P10', 'P11', 'P12', 'P13', 'P14', 'P15', 'P16', 'P17', 'P18', 'P19', 'P20', 'P21', 'P22', 'P23', 'P24', 'P25', 'P26', 'P27', 'P28', 'P29', 'P30',...
     'P31', 'P32', 'P33', 'P34', 'P35', 'P36', 'P37', 'P38', 'P39', 'P40', 'P41', 'P42', 'P43', 'P44', 'P45', 'P46', 'P47'};
 
-age = [nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan...
-    nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan nan...
-    nan nan nan nan nan nan nan];
-% example: sex = {'f' [] 'f' 'f' 'f' 'm' 'm' 'm' 'm' 'm'};
-sex = {[] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] []...
-    [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] []...
-    [] [] [] [] [] [] []};
+age = [480, nan, nan, nan, nan, nan, 486, nan, 486, nan, 484, nan, nan, 479, 482, nan, 491, nan, nan, nan,...
+    nan, 483, 500, 484, nan, 475, nan, 473, 485, 474, nan, 474, nan, nan, 483, 502, nan, nan, nan, 493,...
+    487, 477, nan, 504, 503, 489, nan];
+
+sex = {'m' '' '' '' '' '' 'm' '' 'm' '' 'm' '' '' 'm' 'm' '' 'f' '' '' ''...
+    '' 'f' 'm' 'm' '' 'f' '' 'f' 'm' 'f' '' 'm' '' '' 'f' 'f' '' '' '' 'm'...
+    'f' 'f' '' 'f' 'm' 'm' ''};
 
 % Perhaps add more info in  a datainfo files, if required
 
@@ -41,8 +41,7 @@ for ii = 1:length(sub)
   cfg                                         = [];
   cfg.method                                  = 'copy';
   cfg.bidsroot                                = bidsroot;
-  cfg.datatype                                = 'eeg';
-  
+  cfg.datatype                                = 'eeg';  
   cfg.writejson                               = 'replace';
   
   %% Section 4: the dataset_description.json
@@ -69,9 +68,7 @@ for ii = 1:length(sub)
   
   % Now that we identified the correct subject in the previous section, we
   % can find the correct dataset.
-  str                                   = [];
-  dataset                               = dir(fullfile(str,'*.vhdr'));
-  cfg.dataset                           = [str filesep dataset.name];
+  cfg.dataset                           = ['EEG' filesep  cfg.sub '.vhdr'];
   hdr                                   = ft_read_header(cfg.dataset);
   
   %% Section 7: the EEG json
@@ -104,10 +101,10 @@ for ii = 1:length(sub)
   % is then downsampled to 500 Hz in software
   cfg.eeg.PowerLineFrequency            = 50; % Frequency (in Hz) of the power grid where the EEG is installed (i.e. 50 or 60).
   cfg.eeg.HardwareFilters               = {'Low Cutoff: 0.1', 'High Cutoff: 1000'}; % List of hardware (amplifier) filters
-  cfg.eeg.SoftwareFilters               = {'Low Cutoff: 0.1', 'High Cutoff: 125'}; % List of temporal software filters applied or ideally  key:value pairs of pre-applied filters and their parameter values
+  cfg.eeg.SoftwareFilters               = {'Low Cutoff: 0.1', 'High Cutoff: 200'}; % List of temporal software filters applied or ideally  key:value pairs of pre-applied filters and their parameter values
   
   cfg.eeg.EEGChannelCount               = 32; % Number of EEG channels
-  cfg.eeg.EOGChannelCount               = 2; % Number of EOG channels
+  % cfg.eeg.EOGChannelCount               = % None in these recordings
   % cfg.eeg.ECGChannelCount               = % None in these recordings
   % cfg.eeg.EMGChannelCount               = % None in these recordings
   % cfg.eeg.MiscChannelCount              = % Number of miscellaneous analog channels for auxiliary  signals
@@ -127,8 +124,8 @@ for ii = 1:length(sub)
   
   % To do this, first create events using ft_define_trial
   cfg_trials                      = cfg;
-  cfg_trials.trialdef.eventtype   = '';
-  trl                             = trialfun_thetalearning(cfg_trials);   
+  cfg_trials.trialdef.eventtype   = 'Stimulus';
+  trl                             = trialfun_motionese(cfg_trials);   
   cfg.events                      = trl;
   
   %% Section 9: the channels.tsv
@@ -136,12 +133,12 @@ for ii = 1:length(sub)
   % Double info with eeg.tsv --> here only fill it out if it is channel specific
   
   cfg.channels.name               = hdr.label;
-  cfg.channels.type               = [repmat({'EEG'}, 32, 1); repmat({'EOG'}, 2, 1)];  % Type of channel
-  cfg.channels.units              = repmat({'uV'}, 34, 1);% Physical unit of the data values recorded by this channel in SI
-  cfg.channels.sampling_frequency = repmat(500, 34, 1); % Sampling rate of the channel in Hz.
-  cfg.channels.low_cutoff         = repmat(0.1, 34, 1); % Frequencies used for the hardware high-pass filter applied to the channel in Hz
-  cfg.channels.high_cutoff        = repmat(1000, 34, 1); % Frequencies used for the hardware low-pass filter applied to the channel in Hz.
-  cfg.channels.notch              = repmat(nan, 34, 1); % Frequencies used for the notch filter applied to the channel, in Hz. If no notch filter applied, use n/a.
+  cfg.channels.type               = [repmat({'EEG'}, 32, 1)];  % Type of channel
+  cfg.channels.units              = repmat({'uV'}, 32, 1);% Physical unit of the data values recorded by this channel in SI
+  cfg.channels.sampling_frequency = repmat(500, 32, 1); % Sampling rate of the channel in Hz.
+  cfg.channels.low_cutoff         = repmat(0.1, 32, 1); % Frequencies used for the hardware high-pass filter applied to the channel in Hz
+  cfg.channels.high_cutoff        = repmat(1000, 32, 1); % Frequencies used for the hardware low-pass filter applied to the channel in Hz.
+  cfg.channels.notch              = repmat(nan, 32, 1); % Frequencies used for the notch filter applied to the channel, in Hz. If no notch filter applied, use n/a.
   
   % cfg.channels.software_filters   = {' "Low Cutoff": 0.1', ' "High Cutoff": 125'}; % List of temporal and/or spatial software filters applied.
   % cfg.channels.description        = % OPTIONAL. Brief free-text description of the channel, or other information of interest. See examples below.
@@ -200,7 +197,7 @@ end
 
 participants_json.participant_id.description    = 'Subject identifier';
 participants_json.age.description               = 'age of each subject';
-participants_json.age.units                     = 'months';
+participants_json.age.units                     = 'days';
 participants_json.sex.description               = 'gender of each subject';
 participants_json.sex.levels                    = {'f: female', 'm: male' };
 
