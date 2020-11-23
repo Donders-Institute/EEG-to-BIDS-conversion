@@ -201,7 +201,7 @@ participants_json.participant_id.description    = 'Subject identifier';
 participants_json.age.description               = 'age of each subject';
 participants_json.age.units                     = 'days';
 participants_json.sex.description               = 'gender of each subject';
-participants_json.sex.levels                    = {'f: female', 'm: male', 'n/a: not provided for privacy reasons' };
+participants_json.sex.levels                    = {'f: female', 'm: male', '' };
 
 filename                                        = [bidsroot filesep 'participants.json'];
 
