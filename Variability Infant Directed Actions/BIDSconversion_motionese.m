@@ -173,6 +173,15 @@ for ii = 1:length(sub)
   
   %% Stimulus info --> Not necessary for now
   
+  subject_number                = sum(str2double(regexp(cell2mat(sub(ii)),'\d+','match')));
+  str_subject                   = ['Ppn' num2str(subject_number) '_'];
+  filelist                      = dir(fullfile('Logfiles'));
+  for ll = 1:size(filelist, 1)      
+      if ~isempty(strfind(filelist(ll).name, str_subject))
+          cfg.presentationfile = ['Logfiles' filesep filelist(ll).name]
+      end
+  end
+      
   % cfg.presentationfile        = [sourcedata '\subject_' sub{1} '\Behavioural' '\Theta_Exp_Adult_part1']; % Not sure about this
   % cfg.trigger.eventtype       = cfg.trialdef.eventtype; % Not sure about this % this should be a string, extract it from a datainfo file
   % cfg.trigger.eventvalue      = string or number
