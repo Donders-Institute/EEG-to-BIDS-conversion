@@ -212,12 +212,7 @@ copyfile(this_script, destination);
 
 % Let's create a folder 
 str                                             = [bidsroot filesep 'sourcedata' filesep 'Logfiles'];
-mkdir(str)
- 
-% Then copy the data there
-logfiles                                        = [sourcedata filesep 'Logfiles'];
-logfiles                                        = dir(logfiles);
-copyfile(['Logfiles' filesep logfiles(1).name], str);
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% SUBFUNCTION
