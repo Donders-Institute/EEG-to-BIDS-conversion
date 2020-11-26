@@ -80,8 +80,8 @@ for ii = 1:length(sub)
    %% Section 7: the EEG json
   
   % Describing the task
-  cfg.TaskName                          = 'action-observation'; % Ask Marlene
-  cfg.TaskDescription                   = {'Demonstration phase: infants observed an avator on a screen performing an action', 'Exploration phase: infants were presented with the objects needed to execute the actions from the movies'}; % OPTIONAL. Description of the task, let's do this in the readme
+  cfg.TaskName                          = 'actionobservation'; % Ask Marlene
+  cfg.TaskDescription                   = {'infants observed an avator on a screen performing an action'}; % OPTIONAL. Description of the task, let's do this in the readme
   cfg.Instructions                      = 'none'; % More extensively in the readme
   %cfg.CogAtlasID                        = % OPTIONAL. URL of the corresponding "Cognitive Atlas term that describes the task (e.g. Resting State with eyes closed ""http://www.cognitiveatlas.org/term/id/trm_54e69c642d89b""")
   %cfg.CogPOID                           = % OPTIONAL. URL of the corresponding "CogPO term that describes the task (e.g. Rest "http://wiki.cogpo.org/index.php?title=Rest")
@@ -156,6 +156,150 @@ for ii = 1:length(sub)
   
   data2bids(cfg);
   
+  %% Then add behavioural data: observation phase
+  
+  % First let's find the corresponding excel file 
+  
+  subject_number                                = sum(str2double(regexp(cell2mat(sub(ii)),'\d+','match')));
+  str_subject                                   = ['_P' num2str(subject_number) '_'];
+  filelist                                      = dir(fullfile(['VideoCoding' filesep 'ObservationPhase_Looking']));
+                    
+  for ll = 1:size(filelist, 1)      
+      if ~isempty(strfind(filelist(ll).name, str_subject))
+          excel_obs = ['VideoCoding' filesep 'ObservationPhase_Looking' filesep filelist(ll).name];
+      end
+  end
+  excel_observation                             = xlsread(excel_obs);
+  
+  % Then we convert its info to a more interpretable table
+  tsv_obs                                       = read_excel_observation(excel_observation);
+  
+  
+  % Add the correct folder where you want to add it
+  foldername                                    = [bidsroot filesep 'sub-P' num2str(subject_number) filesep 'beh'];
+  mkdir(foldername);
+  filename                                      = [foldername filesep 'sub-P' num2str(subject_number) '_task-' cfg.TaskName '_events.tsv'];
+  write_tsv(filename, tsv_obs);
+  
+    %% Behavioural data: exploration phase
+  
+  % First let's find the corresponding excel file 
+  
+  subject_number                                = sum(str2double(regexp(cell2mat(sub(ii)),'\d+','match')));
+  str_subject                                   = ['p' num2str(subject_number) '_'];
+  filelist                                      = dir(fullfile(['VideoCoding' filesep 'ExplorationPhase_Behavior']));
+                    
+  for ll = 1:size(filelist, 1)      
+      if ~isempty(strfind(filelist(ll).name, str_subject))
+          excel_expl = ['VideoCoding' filesep 'ExplorationPhase_Behavior' filesep filelist(ll).name];
+      end
+  end
+  if exist('excel_expl', 'var') 
+      exploration_num                           = xlsread(excel_expl);
+  
+      % Then we convert its info to a more interpretable table
+      CodedBehaviour                            = {'AllElements1', 'A1 - First Element Touched', 'A1 - Performed target action',...
+                                                'A1 - Number times succesful', 'A1 - Number times attempted', 'A1 - Number times attempted with wrong element',...
+                                                'AllElements2', 'A2 - First Element Touched', 'A2 - Performed target action',...
+                                                'A2 - Number times succesful', 'A2 - Number times attempted', 'A2 - Number times attempted with wrong element',...
+                                                'AllElements3', 'A3 - First Element Touched', 'A3 - Performed target action',...
+                                                'A3 - Number times succesful', 'A3 - Number times attempted', 'A3 - Number times attempted with wrong element',...
+                                                'OneElement1', 'O1 - Performed target action','O1 - Number times succesful', 'O1 - Number times attempted',...
+                                                'OneElement2', 'O2 - Performed target action','O2 - Number times succesful', 'O2 - Number times attempted',...
+                                                'OneElement3', 'O3 - Performed target action','O3 - Number times succesful', 'O3 - Number times attempted'}';
+      result                                    = exploration_num(2:end);
+      onset                                     = repmat({'Elements touch table'}, length(CodedBehaviour), 1);
+      duration                                  = repmat(60, length(CodedBehaviour), 1);
+      tsv_expl                                  = table(onset, duration, CodedBehaviour, result);
+      
+      % Add it to the correct folder
+      foldername                                    = [bidsroot filesep 'sub-P' num2str(subject_number) filesep 'beh'];
+      filename                                      = [foldername filesep 'sub-P' num2str(subject_number) '_task-exploration_events.tsv'];
+      write_tsv(filename, tsv_expl);
+  end
+  
+  %% Add the behavioural events json, observation phase
+
+    events_json                                 = [];
+    events_json.onset.description               = 'onset of the event, see the EEG events.tsv for the correct onset';
+    events_json.duration.description            = 'duration of the event, see the EEG events.tsv for the correct duration';
+    events_json.CodedPeriod.description         = 'period of annotation looking behaviour';
+    events_json.CodedPeriod.levels              = {'fixation cross: looking behaviour during entire fixation cross',...
+                                                'intro video: looking behaviour during entire introduction video',...
+                                                'stimulus video - phase1: looking behaviour from start stimulus video till the avator moves head down',...
+                                                'stimulus video - phase2: looking behaviour from head moves down till first hand movement',...
+                                                'stimulus video - phase3: looking behaviour during first action (as long as the hand moves)',...
+                                                'stimulus video - phase4: looking behaviour during second action (as long as the hand moves)',...
+                                                'stimulus video - phase5: looking behaviour during third action (as long as the hand moves)',...
+                                                'stimulus video - phase6: looking behaviour during fourth action (as long as the hand moves)',...
+                                                'stimulus video - phase7: looking behaviour during fifth action (as long as the hand moves)',...
+                                                'stimulus video - phase8: looking behaviour from last hand movement till head moves up',...
+                                                'stimulus video - phase9: looking behaviour from head moves up till end stimulus video',...
+                                                'peek-a-boo video - phase1: looking behaviour from start peek-a-boo video till start peek-a-boo gesture',...
+                                                'peek-a-boo video - phases2-5: looking behaviour during peek-a-boo gesture for each second (phase2 for 1 second gesture; phases2 and 3 for 2 second gesture; phases2,3, and 4 for 3 second gesture; phases2,3,4, and 5 for 4 second gesture)',...
+                                                'peek-a-boo video - last phase: looking behaviour from end peek-a-boo gesture till end video'};
+                                               
+    events_json.annotation.description          = 'annotation of looking behaviour';                                               
+    events_json.annotation.levels               = {'1: child looked at the screen for the entire coded period', '0: child did not look at the screen for the entire coded period'};
+    foldername                                  = [bidsroot filesep 'sub-P' num2str(subject_number) filesep 'beh'];
+    filename                                    = [foldername filesep 'sub-P' num2str(subject_number) '_task-' cfg.TaskName '_events.json'];
+
+    write_json(filename, events_json);
+    
+      %% Add the behavioural events json, exploration phase
+
+    events_json                                 = [];
+    events_json.onset.description               = 'onset of the coded behaviour';
+    events_json.duration.description            = 'duration of the coded behaviour';
+    events_json.Duration.units                  = 'seconds';
+    events_json.CodedBehaviour.description      = 'Behaviour that was coded for 1 minute after elements were presented to the child';
+    events_json.CodedBehaviour.levels.phase     = {'AllElements 1-3: three phases (one per element) where base plus all element types are shown',...
+                                                   'OneElement 1-3: three phases (one per element) where base plus correct element type are shown '};
+    events_json.CodedBehaviour.levels.result    = {'AllElements 1-3: identity of the correct element',...
+                                                   'OneElement 1-3: identity of the correct element',...
+                                                   'First Element Touched: identity of the first element the child touched',...
+                                                   'Performed target action: 1 if target action on the base was performed, 0 if not',...
+                                                   'Number times succesful: number of times a succesful action was performed',...
+                                                   'Number times attempted: number of times the action was attempted',...
+                                                   'Number times attempted with wrong element: number of times the action was attempted with the wrong element'};
+                                               
+    events_json.result.description              = 'Results of behavioural coding';                                               
+   
+    foldername                                  = [bidsroot filesep 'sub-P' num2str(subject_number) filesep 'beh'];
+    filename                                    = [foldername filesep 'sub-P' num2str(subject_number) '_task-exploration_events.json'];
+
+    write_json(filename, events_json);
+    
+    %% Add the events json
+
+    events_json                                 = [];
+    events_json.onset.description               = 'Onset of the event';
+    events_json.onset.units                     = 'seconds';
+    events_json.duration.description            = 'Duration of the event';
+    events_json.duration.units                  = 'seconds';
+    events_json.begsample.description           = 'Sample where event begins (measured from start of recording)';
+    events_json.begsample.units                 = 'sample number';
+    events_json.endsample.description           = 'Sample where event ends (measured from start of recording)';
+    events_json.endsample.units                 = 'sample number';
+    events_json.offset.description              = 'Offset from begsample till start of the trial';
+    events_json.offset.units                    = 'sample number';
+    events_json.block.description               = 'Block of the experiment';
+    events_json.block.levels                    = {'1-4: 3 trials each consisting of a fixation cross, an introduction video, and an experimental video, followed by a fixation cross and peek-a-boo video', '5: peek-a-boo videos only'};
+    events_json.trial_type.description          = 'Type of trial';
+    events_json.trial_type.levels               = {'fixation cross: a fixation cross is shown', 'intro video: an introduction video is shown where the avator greets the child'...
+                                                   'experimental video: video is shown where avator performs an action','peek-a-boo: a video is shown where the avator makes a peek-a-boo gesture'};
+    events_json.action_type.description         = 'Type of action displayed in the video';
+    events_json.action_type.levels              = {'balls: putting balls in a bucket', 'cups: building a tower with cups', 'rings: stacking rings on a peg', '... seconds: duration of the peek-a-boo gesture'};
+    events_json.condition.description           = 'Condition of the action';
+    events_json.condition.levels                = {'normal: normal amplitude of motion', 'high: high amplitude of motion', 'variable: variable amplitude of motion', 'n/a: not applicable for this type of trial'};
+    events_json.variability.description         = 'Variability order of the variable condition';
+    events_json.variability.levels              = {'1-4: order of the variable condition motions, see attached video files', 'n/a: not applicable for this type of trial'};
+    
+    foldername                                  = [bidsroot filesep 'sub-P' num2str(subject_number) filesep 'eeg'];
+    filename                                    = [foldername filesep 'sub-P' num2str(subject_number) '_task-' cfg.TaskName '_events.json'];
+
+    write_json(filename, events_json);
+  
 end
 
 %% Add the participants json
@@ -172,52 +316,42 @@ filename                                        = [bidsroot filesep 'participant
 
 write_json(filename, participants_json);
 
-
-%% Add the events json
-
-events_json.onset.description                   = 'Onset of the event';
-events_json.onset.units                         = 'seconds';
-events_json.duration.description                = 'Duration of the event';
-events_json.duration.units                      = 'seconds';
-events_json.begsample.description               = 'Sample from start of recording where the event begins';
-events_json.begsample.units                     = 'sample number';
-events_json.endsample.description               = 'Sample from start of recording where the event ends';
-events_json.endsample.units                     = 'sample number';
-events_json.offset.description                  = 'Offset from onset till start of the trial';
-events_json.offset.units                        = 'sample number';
-events_json.block.description                   = 'Block of the experiment';
-events_json.block.levels                        = {'1-4: 3 trials each consisting of a fixation cross, an introduction video, and an experimental video, followed by a fixation cross and peek-a-boo video', '5: peek-a-boo videos only'};
-events_json.trial_type.description              = 'Type of trial';
-events_json.trial_type.levels                   = {'video and experimental: a sequence of fixation cross, an introduction video, and an experimental video', 'peek-a-boo: a fixation cross followed by a peek-a-boo video'};
-events_json.action_type.description             = 'Type of action displayed in the video';
-events_json.action_type.levels                  = {'balls: putting balls in a bucket', 'cups: building a tower with cups', 'rings: stacking rings on a peg', '... seconds: duration of the peek-a-boo gesture'};
-events_json.condition.description               = 'Condition of the action';
-events_json.condition.levels                    = {'normal: normal amplitude of motion', 'high: high amplitude of motion', 'variable: variable amplitude of motion', 'n/a: not applicable for this type of trial'};
-events_json.variability.description             = 'Variability order of the variable condition';
-events_json.variability.levels                  = {'1-4: order of the variable condition motions, see attached video files', 'n/a: not applicable for this type of trial'};
-
-filename                                        = [bidsroot filesep 'task-' cfg.TaskName '_events.json'];
-
-write_json(filename, events_json);
-
 %% Add the matlab code used to generate BIDS to a subfolder
 
 destination                                     = [bidsroot filesep 'code'];
 this_script                                     = [mfilename('fullpath') '.m'];
+trialfun_script                                 = [fileparts(which(mfilename)) filesep 'trialfun_motionese.m'];
 
 mkdir(destination);
 copyfile(this_script, destination);
+copyfile(trialfun_script, destination);
 
-%% Create a sourcedata folder with the logfiles
+%% Create a sourcedata folder with the logfiles and the video's
 
-% Let's create a folder 
+% Let's create a folder for the logfiles
 str                                             = [bidsroot filesep 'sourcedata' filesep 'Logfiles'];
 mkdir(str)
- 
+
+% And for the video files
+strvideo                                        = [bidsroot filesep 'sourcedata' filesep 'Stimuli'];
+mkdir(str)
+
 % Then copy the data there
 logfiles                                        = [sourcedata filesep 'Logfiles'];
 logfiles                                        = dir(logfiles);
-copyfile(['Logfiles' filesep logfiles(1).name], str);
+videofile                                       = [sourcedata filesep 'Stimuli'];
+videofile                                       = dir(videofile);
+
+copyfile([sourcedata filesep 'Logfiles' filesep logfiles(1).name], str);
+copyfile([sourcedata filesep 'Stimuli' filesep logfiles(1).name], strvideo);
+
+%% Exlude scans.tsv from bidsvalidator
+
+destination = fullfile(bidsroot, '.bidsignore');
+fileID = fopen(destination,'w');
+fprintf(fileID,'*.txt\n');
+fprintf(fileID,'*_scans.tsv\n');
+fclose(fileID);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% SUBFUNCTION
@@ -272,4 +406,83 @@ fid = fopen(filename, 'w');
 fwrite(fid, str);
 fclose(fid);
 
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% SUBFUNCTION
+
+function write_tsv(filename, tsv)
+ft_info('writing ''%s''\n', filename);
+fn = tsv.Properties.VariableNames;
+for i=1:numel(fn)
+  % write [] as 'n/a'
+  % write nan as 'n/a'
+  % write boolean as 'True' or 'False'
+  tsv.(fn{i}) = output_compatible(tsv.(fn{i}));
+end
+writetable(tsv, filename, 'Delimiter', 'tab', 'FileType', 'text');
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% SUBFUNCTION
+
+function val = output_compatible(val)
+if istable(val)
+  fn = val.Properties.VariableNames;
+  for i=1:numel(fn)
+    val.(fn{i}) = output_compatible(val.(fn{i}));
+  end
+elseif iscell(val)
+  % use recursion to make all elements compatible
+  val = cellfun(@output_compatible, val, 'UniformOutput', false);
+elseif isnumeric(val) && numel(val)>1 && any(isnan(val))
+  % convert and use recursion to make all elements compatible
+  val = num2cell(val);
+  val = cellfun(@output_compatible, val, 'UniformOutput', false);
+else
+  % write [] as 'n/a'
+  % write nan as 'n/a'
+  % write boolean as 'True' or 'False'
+  if isempty(val)
+    val = 'n/a';
+  elseif isnan(val)
+    val = 'n/a';
+  elseif islogical(val)
+    if val
+      val = 'True';
+    else
+      val = 'False';
+    end
+  end
+end
+
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% SUBFUNCTION
+
+function tsv_obs = read_excel_observation(excel_observation)
+
+CodedPeriod                                    = cell(length(excel_observation), 1);
+  for ll = 1:length(excel_observation)
+      if excel_observation(ll, 1) == 95
+          CodedPeriod(ll, :) = {'fixation cross'};
+      elseif excel_observation(ll, 1)>100 && excel_observation(ll, 1)<200
+          CodedPeriod(ll, :) = {'intro video'};
+      elseif excel_observation(ll, 1)>2000000 && excel_observation(ll, 1)<22000000
+          % there are nine phases of this:       
+          phase = num2str(excel_observation(ll, 1));
+          phase_str = ['stimulus video - phase' phase(end)]; 
+          CodedPeriod(ll, :) = {phase_str};
+      else 
+          phase = num2str(excel_observation(ll, 1));
+          phase_str = ['peek-a-boo video - phase' phase(end)]; 
+          CodedPeriod(ll, :) = {phase_str};
+      end
+  end
+  annotation                                    = excel_observation(:, 2);
+  onset                                         = nan(size(annotation));
+  duration                                      = nan(size(annotation));
+  tsv_obs                                       = table(onset, duration, CodedPeriod, annotation);
+  
 end
