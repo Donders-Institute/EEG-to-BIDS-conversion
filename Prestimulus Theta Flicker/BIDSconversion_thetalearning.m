@@ -49,7 +49,7 @@ for ii = 1:length(sub)
   cfg.dataset_description.Name                = 'Prestimulus theta flicker';
   cfg.dataset_description.DatasetType         = 'raw';
   cfg.dataset_description.BIDSVersion         = '1.2.0';
-  cfg.dataset_description.Authors             = {'Rocío Fernandez', 'Robert Oostenveld', 'Sabine Hunnius'};
+  cfg.dataset_description.Authors             = {'Rocio Fernandez', 'Robert Oostenveld', 'Sabine Hunnius'};
   
   %   cfg.dataset_description.Acknowledgements    = string
   %   cfg.dataset_description.License             = string, has to be added, discuss with Robert
@@ -102,8 +102,10 @@ for ii = 1:length(sub)
   % NOTE: the amplifier always samples at 5000 Hz in hardware, the data
   % is then downsampled to 500 Hz in software
   cfg.eeg.PowerLineFrequency            = 50; % Frequency (in Hz) of the power grid where the EEG is installed (i.e. 50 or 60).
-  cfg.eeg.HardwareFilters               = {'Low Cutoff: 0.1', 'High Cutoff: 1000'}; % List of hardware (amplifier) filters
-  cfg.eeg.SoftwareFilters               = {'Low Cutoff: 0.1', 'High Cutoff: 125'}; % List of temporal software filters applied or ideally  key:value pairs of pre-applied filters and their parameter values
+  cfg.eeg.HardwareFilters.LowCutoff     = 0.1;
+  cfg.eeg.HardwareFilters.HighCutoff    = 1000; % List of hardware (amplifier) filters
+  cfg.eeg.SoftwareFilters.LowCutoff     = 0.1;
+  cfg.eeg.SoftwareFilters.HighCutoff    = 125; % List of temporal software filters applied or ideally  key:value pairs of pre-applied filters and their parameter values
   
   cfg.eeg.EEGChannelCount               = 64; % Number of EEG channels
   cfg.eeg.EOGChannelCount               = 2; % Number of EOG channels
@@ -235,10 +237,12 @@ write_json(filename, events_json);
 
 %% Add the matlab code used to generate BIDS to a subfolder
 
-destination = fullfile(bidsroot, 'code');
+destination                 = fullfile(bidsroot, 'code');
+trialfun_script             = [fileparts(which(mfilename)) filesep 'trialfun_thetalearning.m'];
 mkdir(destination);
 copyfile(which('trialfun_thetalearning'), destination);
 copyfile(which(mfilename), destination);
+copyfile(trialfun_script, destination);
 
 %% Copy the labnote text files
 

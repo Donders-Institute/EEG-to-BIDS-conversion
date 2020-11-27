@@ -106,8 +106,10 @@ for ii = 1:length(sub)
   % NOTE: the amplifier always samples at 5000 Hz in hardware, the data
   % is then downsampled to 500 Hz in software
   cfg.eeg.PowerLineFrequency            = 50; % Frequency (in Hz) of the power grid where the EEG is installed (i.e. 50 or 60).
-  cfg.eeg.HardwareFilters               = {'Low Cutoff: 0.1', 'High Cutoff: 1000'}; % List of hardware (amplifier) filters
-  cfg.eeg.SoftwareFilters               = {'Low Cutoff: 0.1', 'High Cutoff: 200'}; % List of temporal software filters applied or ideally  key:value pairs of pre-applied filters and their parameter values
+  cfg.eeg.HardwareFilters.LowCutoff     = 0.1;
+  cfg.eeg.HardwareFilters.HighCutoff    = 1000;
+  cfg.eeg.SoftwareFilters.LowCutoff     = 0.1;
+  cfg.eeg.SoftwareFilters.HighCutoff    = 200; % List of temporal software filters applied or ideally  key:value pairs of pre-applied filters and their parameter values
   
   cfg.eeg.EEGChannelCount               = 32; % Number of EEG channels
   % cfg.eeg.EOGChannelCount               = % None in these recordings
