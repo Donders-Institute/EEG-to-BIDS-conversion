@@ -81,7 +81,7 @@ for ii = 1:length(sub)
   
   % Describing the task
   cfg.TaskName                          = 'actionobservation'; % Ask Marlene
-  cfg.TaskDescription                   = {'infants observed an avator on a screen performing an action'}; % OPTIONAL. Description of the task, let's do this in the readme
+  cfg.TaskDescription                   = 'infants observed an avator on a screen performing an action'; % OPTIONAL. Description of the task, let's do this in the readme
   cfg.Instructions                      = 'none'; % More extensively in the readme
   %cfg.CogAtlasID                        = % OPTIONAL. URL of the corresponding "Cognitive Atlas term that describes the task (e.g. Resting State with eyes closed ""http://www.cognitiveatlas.org/term/id/trm_54e69c642d89b""")
   %cfg.CogPOID                           = % OPTIONAL. URL of the corresponding "CogPO term that describes the task (e.g. Rest "http://wiki.cogpo.org/index.php?title=Rest")
@@ -99,7 +99,7 @@ for ii = 1:length(sub)
   cfg.eeg.CapManufacturer               = 'Brain Products GmbH'; % name of the cap manufacturer
   cfg.eeg.CapModelName                  = 'actiCAP 32Ch'; % Manufacturer's designation of the EEG cap model
   cfg.eeg.EEGPlacementScheme            = '10-20'; % Placement scheme of the EEG electrodes
-  cfg.eeg.EEGReference                  = 'M1'; % Description of the type of reference used
+  cfg.eeg.EEGReference                  = 'TP9'; % Description of the type of reference used
   cfg.eeg.EEGGround                     = 'AFz'; % Description of the location of the ground electrode
   
   cfg.eeg.SamplingFrequency             = 500; % Sampling frequency (in Hz)
@@ -331,12 +331,12 @@ copyfile(trialfun_script, destination);
 %% Create a sourcedata folder with the logfiles and the video's
 
 % Let's create a folder for the logfiles
-str                                             = [bidsroot filesep 'sourcedata' filesep 'Logfiles'];
+str                                             = [bidsroot filesep 'sourcedata' filesep 'logfiles'];
 mkdir(str)
 
 % And for the video files
-strvideo                                        = [bidsroot filesep 'sourcedata' filesep 'Stimuli'];
-mkdir(str)
+strvideo                                        = [bidsroot filesep 'stimuli'];
+mkdir(strvideo)
 
 % Then copy the data there
 logfiles                                        = [sourcedata filesep 'Logfiles'];
@@ -351,7 +351,6 @@ copyfile([sourcedata filesep 'Stimuli' filesep logfiles(1).name], strvideo);
 
 destination = fullfile(bidsroot, '.bidsignore');
 fileID = fopen(destination,'w');
-fprintf(fileID,'*.txt\n');
 fprintf(fileID,'*_scans.tsv\n');
 fclose(fileID);
 
@@ -396,7 +395,7 @@ function write_json(filename, json)
 
 ft_info('writing ''%s''\n', filename);
 json = remove_empty(json);
-json = sort_fields(json);
+% json = sort_fields(json);
 json = ft_struct2char(json); % convert strings into char-arrays
 ft_hastoolbox('jsonlab', 1);
 % see also the output_compatible helper function

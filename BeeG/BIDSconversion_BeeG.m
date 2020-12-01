@@ -70,7 +70,7 @@ for ii = 1:length(sub)
   
   % Describing the task
   cfg.TaskName                          = 'audiovisual'; 
-  cfg.TaskDescription                   = {'infants observed a sequence of expected stimuli, followed by an update or no- update cue and then another sequence of expected and unexpected stimuli,respectively'};
+  cfg.TaskDescription                   = {'infants observed a sequence of expected stimuli, followed by an update or no- update cue and then another sequence of unexpected or expected stimuli,respectively'};
   cfg.Instructions                      = 'Parents were instructed to keep the interaction with their child minimal during the measurement, infants received no instructions'; 
     
   % Describing the recording setup
@@ -83,7 +83,7 @@ for ii = 1:length(sub)
   cfg.eeg.CapManufacturer               = 'Brain Products GmbH'; 
   cfg.eeg.CapModelName                  = 'actiCAP 32Ch'; 
   cfg.eeg.EEGPlacementScheme            = '10-20'; 
-  cfg.eeg.EEGReference                  = 'M1'; 
+  cfg.eeg.EEGReference                  = 'TP9'; 
   cfg.eeg.EEGGround                     = 'AFz';   
   cfg.eeg.SamplingFrequency             = 500; 
   
@@ -132,9 +132,7 @@ for ii = 1:length(sub)
   
   data2bids(cfg);
   
-end
-      
-    %% Add the events json
+  %% Add the events json
 
     events_json                                 = [];
     events_json.onset.description               = 'Onset of the event';
@@ -147,32 +145,33 @@ end
     events_json.endsample.units                 = 'sample number';
     events_json.offset.description              = 'Offset from begsample till start of the trial';
     events_json.offset.units                    = 'sample number';
-    events_json.trial_type.description          = 'Type of trial';
-    events_json.trial_type.levels               = {'blank screen: presentation of blank screen before fixation cross',...
+    events_json.marker.description              = 'Marker number corresponding to this event as indicated in the .vmrk file';
+    events_json.stimulus.description            = 'Type of stimulus presented to the infant';
+    events_json.stimulus.levels                 = {'blank screen: presentation of blank screen before fixation cross',...
                                                   'fixation cross: presentation of a fixation cross (see subfoler stimuli\fixation)and a sound(see subfoler stimuli\Ding_Sound_Effect)',...
-                                                  'expected bee: presentation of a bee in the same location and of the same colour as the previous bee (see subfoler stimuli\bee) along with a jumping sound (see subfolder stimuli\sound 1-9)',...
+                                                  'expected bee: presentation of a bee in the same location and of the same colour as the previous bee (see subfoler stimuli\bee) along with a jumping sound (see subfolder stimuli\sound1-9)',...
                                                   'post update-cue bee: presentation of a bee after an update cue, in a different location and of a different colour as the previous bee (see subfoler stimuli\bee) along with a jumping sound (see subfolder stimuli\sound 1-9)',...
                                                   'post no-update-cue bee: presentation of a bee after a no-update cue, in the same location and of the same colour as the previous bee (see subfoler stimuli\bee) along with a jumping sound (see subfolder stimuli\sound 1-9)',...
                                                   'update-cue: presentation of the update-cue (see subfolder stimuli\circle) and a sound (see subfolder stimuli\sound10)',...
                                                   'no-update-cue: presentation of the no-update-cue (see subfolder stimuli\triangle)and a sound (see subfolder stimuli\sound11)',};
-    events_json.location.description            = 'Location of the bee in a bee stimulus';
-    events_json.location.units                  = 'degrees';
+    events_json.location_bee.description         = 'Location of the bee';
+    events_json.location_bee.units               = 'degrees';    
     
-    foldername                                  = [bidsroot filesep 'sub-P' num2str(subject_number) filesep 'eeg'];
-    filename                                    = [foldername filesep 'sub-P' num2str(subject_number) '_task-' cfg.TaskName '_events.json'];
+    foldername                                  = [bidsroot filesep 'sub-' sub{ii} filesep 'eeg'];
+    filename                                    = [foldername filesep 'sub-' sub{ii} '_task-' cfg.TaskName '_events.json'];
 
     write_json(filename, events_json);
 
 
+end % Of subject loop
+ 
 %% Add the participants json
 
 participants_json.participant_id.description    = 'Subject identifier';
 participants_json.age.description               = 'age of each subject';
 participants_json.age.units                     = 'days';
 participants_json.sex.description               = 'gender of each subject';
-participants_json.sex.levels                    = {'f: female', 'm: male', 'n/a: not provided for privacy reasons' };
-participants_json.included.description          = 'included in the final dataset for analysis';
-participants_json.included.levels               = {'yes: included', 'no: not included' };
+participants_json.sex.levels                    = {'girl: female', 'boy: male'};
 
 filename                                        = [bidsroot filesep 'participants.json'];
 
@@ -182,21 +181,21 @@ write_json(filename, participants_json);
 
 destination                                     = [bidsroot filesep 'code'];
 this_script                                     = [mfilename('fullpath') '.m'];
-trialfun_script                                 = [fileparts(which(mfilename)) filesep 'trialfun_motionese.m'];
+trialfun_script                                 = [fileparts(which(mfilename)) filesep 'trialfun_BeeG.m'];
 
 mkdir(destination);
 copyfile(this_script, destination);
 copyfile(trialfun_script, destination);
 
-%% Create a sourcedata folder with the logfiles and the video's
+%% Create a sourcedata folder for the logfiles and a Stimuli folder for the video and audio stimuli
 
 % Let's create a folder for the logfiles
 str                                             = [bidsroot filesep 'sourcedata' filesep 'Logfiles'];
 mkdir(str)
 
 % And for the video files
-strvideo                                        = [bidsroot filesep 'sourcedata' filesep 'Stimuli'];
-mkdir(str)
+strvideo                                        = [bidsroot filesep 'stimuli'];
+mkdir(strvideo)
 
 % Then copy the data there
 logfiles                                        = [sourcedata filesep 'Logfiles'];
@@ -207,11 +206,10 @@ videofile                                       = dir(videofile);
 copyfile([sourcedata filesep 'Logfiles' filesep logfiles(1).name], str);
 copyfile([sourcedata filesep 'Stimuli' filesep logfiles(1).name], strvideo);
 
-%% Exlude scans.tsv from bidsvalidator
+%% Exlude scans.tsv from bidsvalidator, it does not support the vhdr name of the dataset as valid
 
 destination = fullfile(bidsroot, '.bidsignore');
 fileID = fopen(destination,'w');
-fprintf(fileID,'*.txt\n');
 fprintf(fileID,'*_scans.tsv\n');
 fclose(fileID);
 
@@ -256,7 +254,7 @@ function write_json(filename, json)
 
 ft_info('writing ''%s''\n', filename);
 json = remove_empty(json);
-json = sort_fields(json);
+% json = sort_fields(json) % Let's leave this out so that the order will remain as we indicate it here in the code, not alphabetically ordered;
 json = ft_struct2char(json); % convert strings into char-arrays
 ft_hastoolbox('jsonlab', 1);
 % see also the output_compatible helper function

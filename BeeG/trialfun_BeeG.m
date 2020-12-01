@@ -25,63 +25,70 @@ for ii = 1:size(event,2)
                 counttrial = counttrial + 1;
                 begsample(counttrial, :) = event(ii).sample; % Start sample number of the event              
                 endsample(counttrial, :) = event(ii).sample + round(0.5 * hdr.Fs);  % the stimulus is 500 ms long
-                offset(counttrial, :) = 0;                    
-                trial_type(counttrial, : ) = {'blank screen'};
-                location(counttrial, :) = nan;
+                offset(counttrial, :) = 0;
+                marker(counttrial, :) = {event(ii).value};
+                stimulus(counttrial, : ) = {'blank screen'};
+                location_bee(counttrial, :) = nan;
             elseif strcmp(event(ii).value, 'S 10')
                 % This is a fixation cross
                 counttrial = counttrial + 1;
                 begsample(counttrial, :) = event(ii).sample; % Start sample number of the event              
                 endsample(counttrial, :) = event(ii).sample + round(1 * hdr.Fs);  % the stimulus is 1000 ms
-                offset(counttrial, :) = 0;                    
-                trial_type(counttrial, : ) = {'fixation cross'};
-                location(counttrial, :) = nan;
+                offset(counttrial, :) = 0;  
+                marker(counttrial, :) = {event(ii).value};
+                stimulus(counttrial, : ) = {'fixation cross'};
+                location_bee(counttrial, :) = nan;
             elseif any(strcmp(event(ii).value, expected_array))
                 % Then it is an expected bee
                 counttrial = counttrial + 1;
                 begsample(counttrial, :) = event(ii).sample; % Start sample number of the event              
                 endsample(counttrial, :) = event(ii).sample + round(1.5 * hdr.Fs);  % the stimulus is 1000 ms
-                offset(counttrial, :) = 0;                    
-                trial_type(counttrial, : ) = {'expected bee'};
+                offset(counttrial, :) = 0;  
+                marker(counttrial, :) = {event(ii).value};
+                stimulus(counttrial, : ) = {'expected bee'};
                 index = find(strcmp(event(ii).value, expected_array));
-                location(counttrial, :) = locations(index);
+                location_bee(counttrial, :) = locations(index);
             elseif  any(strcmp(event(ii).value, post_update_array))
                 % Then it is a bee presented after an update cue
                 counttrial = counttrial + 1;
                 begsample(counttrial, :) = event(ii).sample; % Start sample number of the event              
                 endsample(counttrial, :) = event(ii).sample + round(1.5 * hdr.Fs);  % the stimulus is 1000 ms
-                offset(counttrial, :) = 0;                    
-                trial_type(counttrial, : ) = {'post update-cue bee'};
+                offset(counttrial, :) = 0; 
+                marker(counttrial, :) = {event(ii).value};
+                stimulus(counttrial, : ) = {'post update-cue bee'};
                 index = find(strcmp(event(ii).value, post_update_array));              
-                location(counttrial, :) = locations(index);
+                location_bee(counttrial, :) = locations(index);
             elseif any(strcmp(event(ii).value, post_no_update_array))
                 % Then it is a bee presented after a no-update cue
                 counttrial = counttrial + 1;
                 begsample(counttrial, :) = event(ii).sample; % Start sample number of the event              
                 endsample(counttrial, :) = event(ii).sample + round(1.5 * hdr.Fs);  % the stimulus is 1000 ms
-                offset(counttrial, :) = 0;                    
-                trial_type(counttrial, : ) = {'post no-update-cue bee'};
+                offset(counttrial, :) = 0; 
+                marker(counttrial, :) = {event(ii).value};
+                stimulus(counttrial, : ) = {'post no-update-cue bee'};
                 index = find(strcmp(event(ii).value, post_no_update_array));
-                location(counttrial, :) = locations(index);
+                location_bee(counttrial, :) = locations(index);
             elseif strcmp(event(ii).value, 'S 19')
                 % Then it is an update cue
                 counttrial = counttrial + 1;
                 begsample(counttrial, :) = event(ii).sample; % Start sample number of the event              
                 endsample(counttrial, :) = event(ii).sample + round(1.5 * hdr.Fs);  % the stimulus is 1000 ms
-                offset(counttrial, :) = 0;                    
-                trial_type(counttrial, : ) = {'update-cue'};
-                location(counttrial, :) = nan;             
+                offset(counttrial, :) = 0;
+                marker(counttrial, :) = {event(ii).value};
+                stimulus(counttrial, : ) = {'update-cue'};
+                location_bee(counttrial, :) = nan;             
             elseif strcmp(event(ii).value, 'S 20')
                 % Then it is a no-update cue
                 counttrial = counttrial + 1;
                 begsample(counttrial, :) = event(ii).sample; % Start sample number of the event              
                 endsample(counttrial, :) = event(ii).sample + round(1.5 * hdr.Fs);  % the stimulus is 1000 ms
-                offset(counttrial, :) = 0;                    
-                trial_type(counttrial, : ) = {'no-update-cue'};
-                location(counttrial, :) = nan;
+                offset(counttrial, :) = 0;   
+                marker(counttrial, :) = {event(ii).value};
+                stimulus(counttrial, : ) = {'no-update-cue'};
+                location_bee(counttrial, :) = nan;
             end             
     end                    
 end
 
 
-trl = table(begsample, endsample, offset, trial_type, location);
+trl = table(begsample, endsample, offset, marker, stimulus, location_bee);
