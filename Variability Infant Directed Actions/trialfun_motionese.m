@@ -29,10 +29,9 @@ for ii = 1:size(event,2)
                         endsample(counttrial, :) = event(ii+1).sample-1;  
                         offset(counttrial, :) = 0;
                         block(counttrial, : ) = blck;
-                        trial_type(counttrial, : ) = {'fixation cross'};
+                        stimulus(counttrial, : ) = {'fixation cross'};
                         action_type(counttrial, : ) = {'n/a'};
-                        condition(counttrial, :) = {'n/a'};
-                        variability(counttrial, :) = {'n/a'};                
+                        condition(counttrial, :) = {'n/a'};                                     
                     end
             
             elseif sum(str2double(regexp(event(ii).value,'\d+','match')))>100 && sum(str2double(regexp(event(ii).value,'\d+','match')))<120

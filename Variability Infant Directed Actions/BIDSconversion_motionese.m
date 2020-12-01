@@ -80,38 +80,38 @@ for ii = 1:length(sub)
    %% Section 7: the EEG json
   
   % Describing the task
-  cfg.TaskName                          = 'actionobservation'; % Ask Marlene
-  cfg.TaskDescription                   = 'infants observed an avator on a screen performing an action'; % OPTIONAL. Description of the task, let's do this in the readme
-  cfg.Instructions                      = 'none'; % More extensively in the readme
+  cfg.TaskName                                    = 'actionobservation'; % Ask Marlene
+  cfg.TaskDescription                             = 'infants observed an avator on a screen performing an action'; % OPTIONAL. Description of the task, let's do this in the readme
+  cfg.Instructions                                = 'none'; % More extensively in the readme
   %cfg.CogAtlasID                        = % OPTIONAL. URL of the corresponding "Cognitive Atlas term that describes the task (e.g. Resting State with eyes closed ""http://www.cognitiveatlas.org/term/id/trm_54e69c642d89b""")
   %cfg.CogPOID                           = % OPTIONAL. URL of the corresponding "CogPO term that describes the task (e.g. Rest "http://wiki.cogpo.org/index.php?title=Rest")
   
   % Describing the recording setup
-  cfg.InstitutionName                   = 'The Donders Institute for Brain, Cognition and Behaviour'; % The name of the institution in charge of the equipment that produced the composite instances.
-  cfg.InstitutionAddress                = 'Heyendaalseweg 135, 6525 AJ Nijmegen, the Netherlands';
-  cfg.InstitutionalDepartmentName       = 'Donders Centre for Cognition';
+  cfg.InstitutionName                             = 'The Donders Institute for Brain, Cognition and Behaviour'; % The name of the institution in charge of the equipment that produced the composite instances.
+  cfg.InstitutionAddress                          = 'Heyendaalseweg 135, 6525 AJ Nijmegen, the Netherlands';
+  cfg.InstitutionalDepartmentName                 = 'Donders Centre for Cognition';
   
-  cfg.Manufacturer                      = 'Brain Products GmbH'; % Manufacturer of the recording system
-  cfg.ManufacturersModelName            = 'BrainAmp Standard'; % Manufacturer's designation of the model
+  cfg.Manufacturer                                = 'Brain Products GmbH'; % Manufacturer of the recording system
+  cfg.ManufacturersModelName                      = 'BrainAmp Standard'; % Manufacturer's designation of the model
   %cfg.DeviceSerialNumber                = % OPTIONAL. The serial number of the equipment that produced the composite instances. A pseudonym can also be used to prevent the equipment from being identifiable, as long as each pseudonym is unique within the dataset.
   %cfg.SoftwareVersions                  = % OPTIONAL. Manufacturer's designation of the acquisition software.
   
-  cfg.eeg.CapManufacturer               = 'Brain Products GmbH'; % name of the cap manufacturer
-  cfg.eeg.CapModelName                  = 'actiCAP 32Ch'; % Manufacturer's designation of the EEG cap model
-  cfg.eeg.EEGPlacementScheme            = '10-20'; % Placement scheme of the EEG electrodes
-  cfg.eeg.EEGReference                  = 'TP9'; % Description of the type of reference used
-  cfg.eeg.EEGGround                     = 'AFz'; % Description of the location of the ground electrode
+  cfg.eeg.CapManufacturer                         = 'Brain Products GmbH'; % name of the cap manufacturer
+  cfg.eeg.CapManufacturersModelName               = 'actiCAP 32Ch'; % Manufacturer's designation of the EEG cap model
+  cfg.eeg.EEGPlacementScheme                      = '10-20'; % Placement scheme of the EEG electrodes
+  cfg.eeg.EEGReference                            = 'TP9'; % Description of the type of reference used
+  cfg.eeg.EEGGround                               = 'AFz'; % Description of the location of the ground electrode
   
-  cfg.eeg.SamplingFrequency             = 500; % Sampling frequency (in Hz)
+  cfg.eeg.SamplingFrequency                       = 500; % Sampling frequency (in Hz)
   % NOTE: the amplifier always samples at 5000 Hz in hardware, the data
   % is then downsampled to 500 Hz in software
-  cfg.eeg.PowerLineFrequency            = 50; % Frequency (in Hz) of the power grid where the EEG is installed (i.e. 50 or 60).
-  cfg.eeg.HardwareFilters.LowCutoff     = 0.1;
-  cfg.eeg.HardwareFilters.HighCutoff    = 1000;
-  cfg.eeg.SoftwareFilters.LowCutoff     = 0.1;
-  cfg.eeg.SoftwareFilters.HighCutoff    = 200; % List of temporal software filters applied or ideally  key:value pairs of pre-applied filters and their parameter values
+  cfg.eeg.PowerLineFrequency                      = 50; % Frequency (in Hz) of the power grid where the EEG is installed (i.e. 50 or 60).
+  cfg.eeg.HardwareFilters.LowCutoff.Frequency     = 0.1;
+  cfg.eeg.HardwareFilters.HighCutoff.Frequency    = 1000;
+  cfg.eeg.SoftwareFilters.LowCutoff.Frequency     = 0.1;
+  cfg.eeg.SoftwareFilters.HighCutoff.Frequency    = 200; % List of temporal software filters applied or ideally  key:value pairs of pre-applied filters and their parameter values
   
-  cfg.eeg.EEGChannelCount               = 32; % Number of EEG channels
+  cfg.eeg.EEGChannelCount                         = 32; % Number of EEG channels
   % cfg.eeg.EOGChannelCount               = % None in these recordings
   % cfg.eeg.ECGChannelCount               = % None in these recordings
   % cfg.eeg.EMGChannelCount               = % None in these recordings
@@ -119,7 +119,7 @@ for ii = 1:length(sub)
   % cfg.eeg.TriggerChannelCount           = % Number of channels for digital and analog triggers.
   
   % Describing the recording
-  cfg.eeg.RecordingType                 = 'continuous';
+  cfg.eeg.RecordingType                           = 'continuous';
   % cfg.eeg.RecordingDuration             = % Read automatically
   % cfg.eeg.EpochLength                   = % Read automatically
   

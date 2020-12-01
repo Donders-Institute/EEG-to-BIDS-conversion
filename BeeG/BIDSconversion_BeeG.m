@@ -69,38 +69,38 @@ for ii = 1:length(sub)
    %% Section 7: the EEG json
   
   % Describing the task
-  cfg.TaskName                          = 'audiovisual'; 
-  cfg.TaskDescription                   = {'infants observed a sequence of expected stimuli, followed by an update or no- update cue and then another sequence of unexpected or expected stimuli,respectively'};
-  cfg.Instructions                      = 'Parents were instructed to keep the interaction with their child minimal during the measurement, infants received no instructions'; 
+  cfg.TaskName                                       = 'audiovisual'; 
+  cfg.TaskDescription                                = {'infants observed a sequence of expected stimuli, followed by an update or no- update cue and then another sequence of unexpected or expected stimuli,respectively'};
+  cfg.Instructions                                   = 'Parents were instructed to keep the interaction with their child minimal during the measurement, infants received no instructions'; 
     
   % Describing the recording setup
-  cfg.InstitutionName                   = 'The Donders Institute for Brain, Cognition and Behaviour'; 
-  cfg.InstitutionAddress                = 'Heyendaalseweg 135, 6525 AJ Nijmegen, the Netherlands';
-  cfg.InstitutionalDepartmentName       = 'Donders Centre for Cognition';
+  cfg.InstitutionName                                = 'The Donders Institute for Brain, Cognition and Behaviour'; 
+  cfg.InstitutionAddress                             = 'Heyendaalseweg 135, 6525 AJ Nijmegen, the Netherlands';
+  cfg.InstitutionalDepartmentName                    = 'Donders Centre for Cognition';
   
-  cfg.Manufacturer                      = 'Brain Products GmbH';
-  cfg.ManufacturersModelName            = 'BrainAmp Standard';  
-  cfg.eeg.CapManufacturer               = 'Brain Products GmbH'; 
-  cfg.eeg.CapModelName                  = 'actiCAP 32Ch'; 
-  cfg.eeg.EEGPlacementScheme            = '10-20'; 
-  cfg.eeg.EEGReference                  = 'TP9'; 
-  cfg.eeg.EEGGround                     = 'AFz';   
-  cfg.eeg.SamplingFrequency             = 500; 
+  cfg.Manufacturer                                   = 'Brain Products GmbH';
+  cfg.ManufacturersModelName                         = 'BrainAmp Standard';  
+  cfg.eeg.CapManufacturer                            = 'Brain Products GmbH'; 
+  cfg.eeg.CapModelName                               = 'actiCAP 32Ch'; 
+  cfg.eeg.EEGPlacementScheme                         = '10-20'; 
+  cfg.eeg.EEGReference                               = 'TP9'; 
+  cfg.eeg.EEGGround                                  = 'AFz';   
+  cfg.eeg.SamplingFrequency                          = 500; 
   
   % NOTE: the amplifier always samples at 5000 Hz in hardware, the data
   % is then downsampled to 500 Hz in software
   
-  cfg.eeg.PowerLineFrequency            = 50;
-  cfg.eeg.HardwareFilters.LowCutoff     = 0.1;
-  cfg.eeg.HardwareFilters.HighCutoff    = 1000;
-  cfg.eeg.SoftwareFilters.LowCutoff     = 0.1;
-  cfg.eeg.SoftwareFilters.HighCutoff    = 200;   
-  cfg.eeg.EEGChannelCount               = 32; % Number of EEG channels
+  cfg.eeg.PowerLineFrequency                         = 50;
+  cfg.eeg.HardwareFilters.LowCutoff.Frequency        = 0.1;
+  cfg.eeg.HardwareFilters.HighCutoff.Frequency       = 1000;
+  cfg.eeg.SoftwareFilters.LowCutoff.Frequency        = 0.1;
+  cfg.eeg.SoftwareFilters.HighCutoff.Frequency       = 200;   
+  cfg.eeg.EEGChannelCount                            = 32; % Number of EEG channels
   
   % Describing the recording
-  cfg.eeg.RecordingType                 = 'continuous';
-  % cfg.eeg.RecordingDuration             = % Read automatically
-  % cfg.eeg.EpochLength                   = % Read automatically  
+  cfg.eeg.RecordingType                              = 'continuous';
+  % cfg.eeg.RecordingDuration                        = % Read automatically
+  % cfg.eeg.EpochLength                              = % Read automatically  
   
   %% Section 8: the events.tsv.
   
