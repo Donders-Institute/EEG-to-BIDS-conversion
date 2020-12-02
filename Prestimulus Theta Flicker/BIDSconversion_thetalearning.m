@@ -2,18 +2,25 @@
 
 %% Section 1: specification of folders
 
-clear
+clear;
 
-% basedir = '/Volumes/Samsung T3/data';
-basedir = 'C:\Users\Didi\Documents\GitHub\Donders Datasets';
+switch getenv('USER')
+  case 'Didi'
+    scripts     = 'C:\Users\Didi\Documents\GitHub\Donders Datasets';
+    basedir     = 'C:\Users\Didi\Documents\GitHub\Donders Datasets\dataset_rocio';
+    sourcedata  = fullfile(basedir, '3_Data', 'Raw data');
+    bidsroot    = fullfile(basedir, 'Thetalearning_dataset_BIDS');
+  case 'roboos'
+    scripts     = '/Volumes/Samsung T3/data/Data2bids-Scripts/Prestimulus Theta Flicker';
+    basedir     = '/Volumes/Samsung T3/data/rocio_adult_theta';
+    sourcedata  = fullfile(basedir, '3_Data', 'Raw data');
+    bidsroot    = fullfile(basedir, 'bids');
+  otherwise
+    errror('you have top specify the local directories of the data and this code');
+end
 
-addpath(fullfile(basedir, 'dataset_rocio', '3_Data'));
-
-sourcedata = fullfile(basedir, 'dataset_rocio', '3_Data', 'Raw data');
-
+addpath(scripts);
 cd(sourcedata)
-
-bidsroot = fullfile(basedir, 'dataset_rocio', 'Thetalearning_dataset_BIDS');
 
 % Delete the current BIDS folder if it already exists
 if exist(bidsroot, 'dir')

@@ -1,16 +1,24 @@
-%% Conversion into BIDS - Variability of Infant Directed Actions project
+%% Conversion into BIDS - BeeG project
 
 %% Section 1: specification of folders
 
 clear;
 
-addpath('C:\Users\Didi\Documents\GitHub\Donders Datasets\BeeG dataset');
+switch getenv('USER')
+  case 'Didi'
+    scripts     = 'C:\Users\Didi\Documents\GitHub\Donders Datasets\BeeG dataset';
+    sourcedata  = 'C:\Users\Didi\Documents\GitHub\Donders Datasets\BeeG dataset';
+    bidsroot    = 'C:\Users\Didi\Documents\GitHub\Donders Datasets\BeeG dataset\BIDS';
+  case 'roboos'
+    scripts     = '/Volumes/Samsung T3/data/Data2bids-Scripts/BeeG';
+    sourcedata  = '/Volumes/Samsung T3/data/di.dcc.DSC_2020.00134_473/sourcedata';
+    bidsroot    = '/Volumes/Samsung T3/data/di.dcc.DSC_2020.00134_473/bids';
+  otherwise
+    errror('you have top specify the local directories of the data and this code');
+end
 
-sourcedata = 'C:\Users\Didi\Documents\GitHub\Donders Datasets\BeeG dataset';
-
+addpath(scripts)
 cd(sourcedata)
-
-bidsroot = 'C:\Users\Didi\Documents\GitHub\Donders Datasets\BeeG dataset\BIDS';
 
 % Delete the current BIDS folder if it already exists
 if exist(bidsroot, 'dir')

@@ -4,13 +4,21 @@
 
 clear;
 
-addpath('C:\Users\Didi\Documents\GitHub\Donders Datasets\dataset_motionese');
+switch getenv('USER')
+  case 'Didi'
+    scripts     = 'C:\Users\Didi\Documents\GitHub\Donders Datasets\dataset_motionese';
+    sourcedata  = 'C:\Users\Didi\Documents\GitHub\Donders Datasets\dataset_motionese';
+    bidsroot    = 'C:\Users\Didi\Documents\GitHub\Donders Datasets\dataset_motionese\BIDS';
+  case 'roboos'
+    scripts     = '/Volumes/Samsung T3/data/Data2bids-Scripts/Variability Infant Directed Actions';
+    sourcedata  = '/Volumes/Samsung T3/data/marlene_motionese/sourcedata';
+    bidsroot    = '/Volumes/Samsung T3/data/marlene_motionese/bids';
+  otherwise
+    errror('you have top specify the local directories of the data and this code');
+end
 
-sourcedata = 'C:\Users\Didi\Documents\GitHub\Donders Datasets\dataset_motionese';
-
+addpath(scripts);
 cd(sourcedata)
-
-bidsroot = 'C:\Users\Didi\Documents\GitHub\Donders Datasets\dataset_motionese\BIDS';
 
 % Delete the current BIDS folder if it already exists
 if exist(bidsroot, 'dir')
