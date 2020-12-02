@@ -1,16 +1,24 @@
-%% Conversion into BIDS - Variability of Infant Directed Actions project
+%% Conversion into BIDS - BeeG project
 
 %% Section 1: specification of folders
 
 clear;
 
-addpath('C:\Users\Didi\Documents\GitHub\Donders Datasets\BeeG dataset');
+switch getenv('USER')
+  case 'Didi'
+    scripts     = 'C:\Users\Didi\Documents\GitHub\Donders Datasets\BeeG dataset';
+    sourcedata  = 'C:\Users\Didi\Documents\GitHub\Donders Datasets\BeeG dataset';
+    bidsroot    = 'C:\Users\Didi\Documents\GitHub\Donders Datasets\BeeG dataset\BIDS';
+  case 'roboos'
+    scripts     = '/Volumes/Samsung T3/data/Data2bids-Scripts/BeeG';
+    sourcedata  = '/Volumes/Samsung T3/data/di.dcc.DSC_2020.00134_473/sourcedata';
+    bidsroot    = '/Volumes/Samsung T3/data/di.dcc.DSC_2020.00134_473/bids';
+  otherwise
+    errror('you have top specify the local directories of the data and this code');
+end
 
-sourcedata = 'C:\Users\Didi\Documents\GitHub\Donders Datasets\BeeG dataset';
-
+addpath(scripts)
 cd(sourcedata)
-
-bidsroot = 'C:\Users\Didi\Documents\GitHub\Donders Datasets\BeeG dataset\BIDS';
 
 % Delete the current BIDS folder if it already exists
 if exist(bidsroot, 'dir')
@@ -43,8 +51,9 @@ for ii = 1:length(sub)
   cfg.dataset_description.DatasetType         = 'raw';
   cfg.dataset_description.BIDSVersion         = '1.2.0';
   cfg.dataset_description.Authors             = {'Ezgi Kayhan','Marlene Meyer', 'Jill X O''Reilly', 'Sabine Hunnius', 'Harold Bekkering'};
+  cfg.dataset_description.License             = 'ODC-ODbL-1.0'; % ask others if correct
+
   %   cfg.dataset_description.Acknowledgements    = string
-  cfg.dataset_description.License             = 'CC0'; % ask others if correct
   %   cfg.dataset_description.HowToAcknowledge    = string, add this??
   %   cfg.dataset_description.Funding             = string or cell-array of strings, add this?
   %   cfg.dataset_description.ReferencesAndLinks  = string or cell-array of strings
@@ -53,6 +62,8 @@ for ii = 1:length(sub)
   %% Section 5: the participants tsv
   
   cfg.sub                               = sub{ii};
+  cfg.sub(cfg.sub=='_')                 = []; % remove underscores from the subject identifier
+  
   cfg.participants.age                  = age(ii);
   cfg.participants.sex                  = sex{ii};
   % Add an included section here as for motionese dataset after we do analysis?
@@ -61,7 +72,7 @@ for ii = 1:length(sub)
   
   % Now that we identified the correct subject in the previous section, we
   % can find the correct dataset.
-  cfg.dataset                           = ['Raw_data_infant' filesep  cfg.sub '.vhdr'];
+  cfg.dataset                           = ['Raw_data_infant' filesep  sub{ii} '.vhdr'];
   if cfg.dataset
       hdr                                   = ft_read_header(cfg.dataset);
   end
@@ -157,8 +168,8 @@ for ii = 1:length(sub)
     events_json.location_bee.description         = 'Location of the bee';
     events_json.location_bee.units               = 'degrees';    
     
-    foldername                                  = [bidsroot filesep 'sub-' sub{ii} filesep 'eeg'];
-    filename                                    = [foldername filesep 'sub-' sub{ii} '_task-' cfg.TaskName '_events.json'];
+    foldername                                  = [bidsroot filesep 'sub-' cfg.sub filesep 'eeg'];
+    filename                                    = [foldername filesep 'sub-' cfg.sub '_task-' cfg.TaskName '_events.json'];
 
     write_json(filename, events_json);
 
@@ -211,6 +222,18 @@ copyfile([sourcedata filesep 'Stimuli' filesep logfiles(1).name], strvideo);
 destination = fullfile(bidsroot, '.bidsignore');
 fileID = fopen(destination,'w');
 fprintf(fileID,'*_scans.tsv\n');
+fclose(fileID);
+
+%% Make a README and CHANGES file as placeholders
+
+destination = fullfile(bidsroot, 'CHANGES');
+fileID = fopen(destination,'w');
+fprintf(fileID,'Revision history\n\n\n');
+fclose(fileID);
+
+destination = fullfile(bidsroot, 'README');
+fileID = fopen(destination,'w');
+fprintf(fileID,'\n\n\n');
 fclose(fileID);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

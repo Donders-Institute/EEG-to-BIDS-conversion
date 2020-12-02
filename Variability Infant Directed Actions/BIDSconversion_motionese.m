@@ -4,13 +4,21 @@
 
 clear;
 
-addpath('C:\Users\Didi\Documents\GitHub\Donders Datasets\dataset_motionese');
+switch getenv('USER')
+  case 'Didi'
+    scripts     = 'C:\Users\Didi\Documents\GitHub\Donders Datasets\dataset_motionese';
+    sourcedata  = 'C:\Users\Didi\Documents\GitHub\Donders Datasets\dataset_motionese';
+    bidsroot    = 'C:\Users\Didi\Documents\GitHub\Donders Datasets\dataset_motionese\BIDS';
+  case 'roboos'
+    scripts     = '/Volumes/Samsung T3/data/Data2bids-Scripts/Variability Infant Directed Actions';
+    sourcedata  = '/Volumes/Samsung T3/data/marlene_motionese/sourcedata';
+    bidsroot    = '/Volumes/Samsung T3/data/marlene_motionese/bids';
+  otherwise
+    errror('you have top specify the local directories of the data and this code');
+end
 
-sourcedata = 'C:\Users\Didi\Documents\GitHub\Donders Datasets\dataset_motionese';
-
+addpath(scripts);
 cd(sourcedata)
-
-bidsroot = 'C:\Users\Didi\Documents\GitHub\Donders Datasets\dataset_motionese\BIDS';
 
 % Delete the current BIDS folder if it already exists
 if exist(bidsroot, 'dir')
@@ -52,6 +60,7 @@ for ii = 1:length(sub)
   cfg.dataset_description.Name                = 'Variability in infant-directed actions';
   cfg.dataset_description.DatasetType         = 'raw';
   cfg.dataset_description.BIDSVersion         = '1.2.0';
+  cfg.dataset_description.License             = 'ODC-ODbL-1.0'; % ask others if correct
   cfg.dataset_description.Authors             = {'Marlene Meyer', 'Johanna E. van Schaik', 'Francesco Poli', 'Sabine Hunnius'};
   
   %   cfg.dataset_description.Acknowledgements    = string
@@ -356,6 +365,18 @@ end
 destination = fullfile(bidsroot, '.bidsignore');
 fileID = fopen(destination,'w');
 fprintf(fileID,'*_scans.tsv\n');
+fclose(fileID);
+
+%% Make a README and CHANGES file as placeholders
+
+destination = fullfile(bidsroot, 'CHANGES');
+fileID = fopen(destination,'w');
+fprintf(fileID,'Revision history\n\n\n');
+fclose(fileID);
+
+destination = fullfile(bidsroot, 'README');
+fileID = fopen(destination,'w');
+fprintf(fileID,'\n\n\n');
 fclose(fileID);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

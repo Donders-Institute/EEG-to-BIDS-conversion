@@ -2,18 +2,25 @@
 
 %% Section 1: specification of folders
 
-clear
+clear;
 
-% basedir = '/Volumes/Samsung T3/data';
-basedir = 'C:\Users\Didi\Documents\GitHub\Donders Datasets';
+switch getenv('USER')
+  case 'Didi'
+    scripts     = 'C:\Users\Didi\Documents\GitHub\Donders Datasets';
+    basedir     = 'C:\Users\Didi\Documents\GitHub\Donders Datasets\dataset_rocio';
+    sourcedata  = fullfile(basedir, '3_Data', 'Raw data');
+    bidsroot    = fullfile(basedir, 'Thetalearning_dataset_BIDS');
+  case 'roboos'
+    scripts     = '/Volumes/Samsung T3/data/Data2bids-Scripts/Prestimulus Theta Flicker';
+    basedir     = '/Volumes/Samsung T3/data/rocio_adult_theta';
+    sourcedata  = fullfile(basedir, 'sourcedata', '3_Data', 'Raw data');
+    bidsroot    = fullfile(basedir, 'bids');
+  otherwise
+    errror('you have top specify the local directories of the data and this code');
+end
 
-addpath(fullfile(basedir, 'dataset_rocio', '3_Data'));
-
-sourcedata = fullfile(basedir, 'dataset_rocio', '3_Data', 'Raw data');
-
+addpath(scripts);
 cd(sourcedata)
-
-bidsroot = fullfile(basedir, 'dataset_rocio', 'Thetalearning_dataset_BIDS');
 
 % Delete the current BIDS folder if it already exists
 if exist(bidsroot, 'dir')
@@ -49,6 +56,7 @@ for ii = 1:length(sub)
   cfg.dataset_description.Name                = 'Prestimulus theta flicker';
   cfg.dataset_description.DatasetType         = 'raw';
   cfg.dataset_description.BIDSVersion         = '1.2.0';
+  cfg.dataset_description.License             = 'ODC-ODbL-1.0'; % ask others if correct
   cfg.dataset_description.Authors             = {'Rocio Fernandez', 'Robert Oostenveld', 'Sabine Hunnius'};
   
   %   cfg.dataset_description.Acknowledgements    = string
@@ -269,6 +277,18 @@ destination = fullfile(bidsroot, '.bidsignore');
 fileID = fopen(destination,'w');
 fprintf(fileID,'*.txt\n');
 fprintf(fileID,'*_scans.tsv\n');
+fclose(fileID);
+
+%% Make a README and CHANGES file as placeholders
+
+destination = fullfile(bidsroot, 'CHANGES');
+fileID = fopen(destination,'w');
+fprintf(fileID,'Revision history\n\n\n');
+fclose(fileID);
+
+destination = fullfile(bidsroot, 'README');
+fileID = fopen(destination,'w');
+fprintf(fileID,'\n\n\n');
 fclose(fileID);
 
 %% There are scans.tsv files that should not be there, let's remove them here for now
