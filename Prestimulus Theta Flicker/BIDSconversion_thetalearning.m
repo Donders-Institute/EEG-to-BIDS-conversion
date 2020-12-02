@@ -278,6 +278,18 @@ fprintf(fileID,'*.txt\n');
 fprintf(fileID,'*_scans.tsv\n');
 fclose(fileID);
 
+%% Make a README and CHANGES file as placeholders
+
+destination = fullfile(bidsroot, 'CHANGES');
+fileID = fopen(destination,'w');
+fprintf(fileID,'Revision history\n\n\n');
+fclose(fileID);
+
+destination = fullfile(bidsroot, 'README');
+fileID = fopen(destination,'w');
+fprintf(fileID,'\n\n\n');
+fclose(fileID);
+
 %% There are scans.tsv files that should not be there, let's remove them here for now
 
 %if isfield(cfg, 'scans')
