@@ -4,7 +4,13 @@
 
 clear;
 
-switch getenv('USER')
+if isempty(getenv('USER'))
+    user = getenv('UserName');
+else
+    user = getenv('USER');
+end
+
+switch user
   case 'Didi'
     scripts     = 'C:\Users\Didi\Documents\GitHub\Donders Datasets\dataset_motionese';
     sourcedata  = 'C:\Users\Didi\Documents\GitHub\Donders Datasets\dataset_motionese';
@@ -14,7 +20,7 @@ switch getenv('USER')
     sourcedata  = '/Volumes/Samsung T3/data/marlene_motionese/sourcedata';
     bidsroot    = '/Volumes/Samsung T3/data/marlene_motionese/bids';
   otherwise
-    errror('you have top specify the local directories of the data and this code');
+    error('you have top specify the local directories of the data and this code');
 end
 
 addpath(scripts);

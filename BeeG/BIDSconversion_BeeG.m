@@ -4,7 +4,13 @@
 
 clear;
 
-switch getenv('USER')
+if isempty(getenv('USER'))
+    user = getenv('UserName');
+else
+    user = getenv('USER');
+end
+
+switch getenv('UserName')
   case 'Didi'
     scripts     = 'C:\Users\Didi\Documents\GitHub\Donders Datasets\BeeG dataset';
     sourcedata  = 'C:\Users\Didi\Documents\GitHub\Donders Datasets\BeeG dataset';
@@ -51,7 +57,7 @@ for ii = 1:length(sub)
   cfg.dataset_description.DatasetType         = 'raw';
   cfg.dataset_description.BIDSVersion         = '1.2.0';
   cfg.dataset_description.Authors             = {'Ezgi Kayhan','Marlene Meyer', 'Jill X O''Reilly', 'Sabine Hunnius', 'Harold Bekkering'};
-  cfg.dataset_description.License             = 'ODC-ODbL-1.0'; % ask others if correct
+  cfg.dataset_description.License             = 'ODC-ODbL-1.0';
 
   %   cfg.dataset_description.Acknowledgements    = string
   %   cfg.dataset_description.HowToAcknowledge    = string, add this??
@@ -81,7 +87,7 @@ for ii = 1:length(sub)
   
   % Describing the task
   cfg.TaskName                                       = 'audiovisual'; 
-  cfg.TaskDescription                                = {'infants observed a sequence of expected stimuli, followed by an update or no- update cue and then another sequence of unexpected or expected stimuli,respectively'};
+  cfg.TaskDescription                                = 'infants observed a sequence of expected stimuli, followed by an update or no- update cue and then another sequence of unexpected or expected stimuli,respectively';
   cfg.Instructions                                   = 'Parents were instructed to keep the interaction with their child minimal during the measurement, infants received no instructions'; 
     
   % Describing the recording setup
@@ -92,7 +98,7 @@ for ii = 1:length(sub)
   cfg.Manufacturer                                   = 'Brain Products GmbH';
   cfg.ManufacturersModelName                         = 'BrainAmp Standard';  
   cfg.eeg.CapManufacturer                            = 'Brain Products GmbH'; 
-  cfg.eeg.CapModelName                               = 'actiCAP 32Ch'; 
+  cfg.eeg.CapManufacturersModelName                  = 'actiCAP 32Ch'; 
   cfg.eeg.EEGPlacementScheme                         = '10-20'; 
   cfg.eeg.EEGReference                               = 'TP9'; 
   cfg.eeg.EEGGround                                  = 'AFz';   
