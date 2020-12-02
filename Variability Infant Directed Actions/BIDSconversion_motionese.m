@@ -60,6 +60,7 @@ for ii = 1:length(sub)
   cfg.dataset_description.Name                = 'Variability in infant-directed actions';
   cfg.dataset_description.DatasetType         = 'raw';
   cfg.dataset_description.BIDSVersion         = '1.2.0';
+  cfg.dataset_description.License             = 'ODC-ODbL-1.0'; % ask others if correct
   cfg.dataset_description.Authors             = {'Marlene Meyer', 'Johanna E. van Schaik', 'Francesco Poli', 'Sabine Hunnius'};
   
   %   cfg.dataset_description.Acknowledgements    = string

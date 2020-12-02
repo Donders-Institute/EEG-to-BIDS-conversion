@@ -56,6 +56,7 @@ for ii = 1:length(sub)
   cfg.dataset_description.Name                = 'Prestimulus theta flicker';
   cfg.dataset_description.DatasetType         = 'raw';
   cfg.dataset_description.BIDSVersion         = '1.2.0';
+  cfg.dataset_description.License             = 'ODC-ODbL-1.0'; % ask others if correct
   cfg.dataset_description.Authors             = {'Rocio Fernandez', 'Robert Oostenveld', 'Sabine Hunnius'};
   
   %   cfg.dataset_description.Acknowledgements    = string

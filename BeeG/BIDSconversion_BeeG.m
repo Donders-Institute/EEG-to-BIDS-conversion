@@ -51,8 +51,9 @@ for ii = 1:length(sub)
   cfg.dataset_description.DatasetType         = 'raw';
   cfg.dataset_description.BIDSVersion         = '1.2.0';
   cfg.dataset_description.Authors             = {'Ezgi Kayhan','Marlene Meyer', 'Jill X O''Reilly', 'Sabine Hunnius', 'Harold Bekkering'};
+  cfg.dataset_description.License             = 'ODC-ODbL-1.0'; % ask others if correct
+
   %   cfg.dataset_description.Acknowledgements    = string
-  cfg.dataset_description.License             = 'CC0'; % ask others if correct
   %   cfg.dataset_description.HowToAcknowledge    = string, add this??
   %   cfg.dataset_description.Funding             = string or cell-array of strings, add this?
   %   cfg.dataset_description.ReferencesAndLinks  = string or cell-array of strings
