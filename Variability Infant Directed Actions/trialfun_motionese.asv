@@ -43,15 +43,7 @@ for ii = 2:size(event, 2)-1
                 end
             end
         end
-        if sum(str2double(regexp(event(ii-1).value,'\d+','match')))>=201 && sum(str2double(regexp(event(ii-1).value,'\d+','match')))<=218
-            if sum(str2double(regexp(event(ii+1).value,'\d+','match')))<=34
-                % Then we are in between an exp video en condition indicator, there
-                % should be nothing here
-                if value>100
-                    array(ii,1)=1;
-                end
-            end
-        end
+    
     end
 end
 event(array) = [];

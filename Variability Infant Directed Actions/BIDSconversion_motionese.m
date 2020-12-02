@@ -283,19 +283,16 @@ for ii = 1:length(sub)
     events_json.begsample.units                 = 'sample number';
     events_json.endsample.description           = 'Sample where event ends (measured from start of recording)';
     events_json.endsample.units                 = 'sample number';
-    events_json.offset.description              = 'Offset from begsample till start of the trial';
+    events_json.offset.description              = 'Offset from begsample till start of the trial of interest';
     events_json.offset.units                    = 'sample number';
     events_json.block.description               = 'Block of the experiment';
     events_json.block.levels                    = {'1-4: 3 trials each consisting of a fixation cross, an introduction video, and an experimental video, followed by a fixation cross and peek-a-boo video', '5: peek-a-boo videos only'};
-    events_json.trial_type.description          = 'Type of trial';
-    events_json.trial_type.levels               = {'fixation cross: a fixation cross is shown', 'intro video: an introduction video is shown where the avator greets the child'...
-                                                   'experimental video: video is shown where avator performs an action','peek-a-boo: a video is shown where the avator makes a peek-a-boo gesture'};
-    events_json.action_type.description         = 'Type of action displayed in the video';
-    events_json.action_type.levels              = {'balls: putting balls in a bucket', 'cups: building a tower with cups', 'rings: stacking rings on a peg', '... seconds: duration of the peek-a-boo gesture'};
-    events_json.condition.description           = 'Condition of the action';
-    events_json.condition.levels                = {'normal: normal amplitude of motion', 'high: high amplitude of motion', 'variable: variable amplitude of motion', 'n/a: not applicable for this type of trial'};
-    events_json.variability.description         = 'Variability order of the variable condition';
-    events_json.variability.levels              = {'1-4: order of the variable condition motions, see attached video files', 'n/a: not applicable for this type of trial'};
+    events_json.marker.description              = 'Marker number corresponding to this event as indicated in the .vmrk file';
+    events_json.stimulus.description            = 'Stimulus file presented to the infact (see subfolder stimuli)';
+    events_json.action_exp_video.description    = 'Type of action displayed in the experimental video';
+    events_json.action_exp_video.levels         = {'balls: putting balls in a bucket', 'cups: building a tower with cups', 'rings: stacking rings on a peg', '*_stack_**_completed: within the experimental video action number ** of type * has been completed, a total of 5 actions are shown in one video', 'n/a: not applicable for this type of trial'};
+    events_json.condition_exp_video.description = 'Condition of the action';
+    events_json.condition_exp_video.levels      = {'normal: normal amplitude of motion', 'high: high amplitude of motion', 'variable: variable amplitude of motion', 'n/a: not applicable for this type of trial'};
     
     foldername                                  = [bidsroot filesep 'sub-P' num2str(subject_number) filesep 'eeg'];
     filename                                    = [foldername filesep 'sub-P' num2str(subject_number) '_task-' cfg.TaskName '_events.json'];
@@ -345,7 +342,14 @@ videofile                                       = [sourcedata filesep 'Stimuli']
 videofile                                       = dir(videofile);
 
 copyfile([sourcedata filesep 'Logfiles' filesep logfiles(1).name], str);
-copyfile([sourcedata filesep 'Stimuli' filesep logfiles(1).name], strvideo);
+copyfile([sourcedata filesep 'Stimuli' filesep videofile(1).name], strvideo);
+
+for cc = 1:length(videofile)
+    if contains(videofile(cc).name, 'wave')
+        delete([strvideo filesep videofile(cc).name])
+    end
+end
+
 
 %% Exlude scans.tsv from bidsvalidator
 
