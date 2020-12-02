@@ -62,6 +62,8 @@ for ii = 1:length(sub)
   %% Section 5: the participants tsv
   
   cfg.sub                               = sub{ii};
+  cfg.sub(cfg.sub=='_')                 = []; % remove underscores from the subject identifier
+  
   cfg.participants.age                  = age(ii);
   cfg.participants.sex                  = sex{ii};
   % Add an included section here as for motionese dataset after we do analysis?
@@ -70,7 +72,7 @@ for ii = 1:length(sub)
   
   % Now that we identified the correct subject in the previous section, we
   % can find the correct dataset.
-  cfg.dataset                           = ['Raw_data_infant' filesep  cfg.sub '.vhdr'];
+  cfg.dataset                           = ['Raw_data_infant' filesep  sub{ii} '.vhdr'];
   if cfg.dataset
       hdr                                   = ft_read_header(cfg.dataset);
   end
@@ -166,8 +168,8 @@ for ii = 1:length(sub)
     events_json.location_bee.description         = 'Location of the bee';
     events_json.location_bee.units               = 'degrees';    
     
-    foldername                                  = [bidsroot filesep 'sub-' sub{ii} filesep 'eeg'];
-    filename                                    = [foldername filesep 'sub-' sub{ii} '_task-' cfg.TaskName '_events.json'];
+    foldername                                  = [bidsroot filesep 'sub-' cfg.sub filesep 'eeg'];
+    filename                                    = [foldername filesep 'sub-' cfg.sub '_task-' cfg.TaskName '_events.json'];
 
     write_json(filename, events_json);
 
