@@ -13,7 +13,7 @@ switch getenv('USER')
   case 'roboos'
     scripts     = '/Volumes/Samsung T3/data/Data2bids-Scripts/Prestimulus Theta Flicker';
     basedir     = '/Volumes/Samsung T3/data/rocio_adult_theta';
-    sourcedata  = fullfile(basedir, '3_Data', 'Raw data');
+    sourcedata  = fullfile(basedir, 'sourcedata', '3_Data', 'Raw data');
     bidsroot    = fullfile(basedir, 'bids');
   otherwise
     errror('you have top specify the local directories of the data and this code');
