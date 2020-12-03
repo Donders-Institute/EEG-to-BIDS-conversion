@@ -4,10 +4,9 @@
 
 clear;
 
-if isempty(getenv('USER'))
-    user = getenv('UserName');
-else
-    user = getenv('USER');
+user = getenv('USER');
+if isempty(user)
+  user = getenv('UserName');
 end
 
 switch user

@@ -1,10 +1,15 @@
-%% Conversion into BIDS - Thetaflicker project
+%% Conversion into BIDS - Prestimulus Theta Flicker project
 
 %% Section 1: specification of folders
 
 clear;
 
-switch getenv('USER')
+user = getenv('USER');
+if isempty(user)
+  user = getenv('UserName');
+end
+
+switch user
   case 'Didi'
     scripts     = 'C:\Users\Didi\Documents\GitHub\Donders Datasets';
     basedir     = 'C:\Users\Didi\Documents\GitHub\Donders Datasets\dataset_rocio';

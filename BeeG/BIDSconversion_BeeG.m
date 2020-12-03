@@ -4,13 +4,12 @@
 
 clear;
 
-if isempty(getenv('USER'))
-    user = getenv('UserName');
-else
-    user = getenv('USER');
+user = getenv('USER');
+if isempty(user)
+  user = getenv('UserName');
 end
 
-switch getenv('UserName')
+switch user
   case 'Didi'
     scripts     = 'C:\Users\Didi\Documents\GitHub\Donders Datasets\BeeG dataset';
     sourcedata  = 'C:\Users\Didi\Documents\GitHub\Donders Datasets\BeeG dataset';
