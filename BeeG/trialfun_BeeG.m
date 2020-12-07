@@ -45,7 +45,7 @@ for ii = 1:size(event,2)
                 endsample(counttrial, :) = event(ii).sample + round(1.5 * hdr.Fs);  % the stimulus is 1000 ms
                 offset(counttrial, :) = 0;  
                 marker(counttrial, :) = {event(ii).value};
-                stimulus(counttrial, : ) = {'expected bee'};
+                stimulus(counttrial, : ) = {'bee'};
                 index = find(strcmp(event(ii).value, expected_array));
                 location_bee(counttrial, :) = locations(index);
             elseif  any(strcmp(event(ii).value, post_update_array))
