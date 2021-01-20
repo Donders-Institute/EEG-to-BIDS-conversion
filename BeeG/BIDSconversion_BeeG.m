@@ -71,8 +71,7 @@ for ii = 1:length(sub)
   
   cfg.participants.age                  = age(ii);
   cfg.participants.sex                  = sex{ii};
-  % Add an included section here as for motionese dataset after we do analysis?
-  
+    
   %% Section 6: the dataset
   
   % Now that we identified the correct subject in the previous section, we
