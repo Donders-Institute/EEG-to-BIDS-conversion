@@ -10,7 +10,7 @@ The BIDS converted dataset is published on the [Donders Repository](https://doi.
 
 ## Prestimulus Theta Flicker
 
-These scripts are for the EEG dataset "Investigating theta-induced effects on memory encoding in adults" that was acquired by Maria (Rocio) Fernandez Barrero. The dataset is archived on the [Donders Repository](https://doi.org/10.34973/x2ar-9j44)) but not (yet) published.
+These scripts are for the EEG dataset "Investigating theta-induced effects on memory encoding in adults" that was acquired by Maria (Rocio) Fernandez Barrero. The [data acquisition collection](https://doi.org/10.34973/x2ar-9j44) and the [research documentation collection](https://doi.org/10.34973/26fc-4p67) are archived on the Donders Repository, but the data is not (yet) published.
 
 ## Variability Infant Directed Actions
 
